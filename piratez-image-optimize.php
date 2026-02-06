@@ -37,7 +37,6 @@ register_activation_hook( __FILE__, 'piratez_io_activate' );
  * Bootstrap plugin.
  */
 function piratez_io_init() {
-	load_plugin_textdomain( 'piratez-image-optimize', false, dirname( PIRATEZ_IO_PLUGIN_BASENAME ) . '/languages' );
 	require_once PIRATEZ_IO_PLUGIN_DIR . 'includes/class-environment.php';
 	require_once PIRATEZ_IO_PLUGIN_DIR . 'includes/class-discovery.php';
 	require_once PIRATEZ_IO_PLUGIN_DIR . 'includes/class-generation.php';
@@ -63,6 +62,10 @@ function piratez_io_init() {
 }
 
 add_action( 'plugins_loaded', 'piratez_io_init' );
+
+add_action( 'init', function () {
+	load_plugin_textdomain( 'piratez-image-optimize', false, dirname( PIRATEZ_IO_PLUGIN_BASENAME ) . '/languages' );
+} );
 
 /**
  * On upload: generate WebP for newly created sizes only.

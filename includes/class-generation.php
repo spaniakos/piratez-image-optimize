@@ -21,6 +21,10 @@ class Piratez_IO_Generation {
 	 * @return array{regenerated: bool, webp_generated: int, bytes_saved: int, errors: string[]}
 	 */
 	public static function process_attachment( $attachment_id ) {
+		set_time_limit( 120 );
+		if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+		}
 		$result = array( 'regenerated' => false, 'webp_generated' => 0, 'bytes_saved' => 0, 'errors' => array() );
 		$file   = get_attached_file( $attachment_id );
 		if ( ! $file || ! file_exists( $file ) ) {
