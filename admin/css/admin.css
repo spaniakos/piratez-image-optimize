@@ -1,0 +1,17 @@
+.piratez-io-admin { margin: 1em 0; }
+.piratez-io-admin .ssw-section { margin: 2em 0; }
+.piratez-io-admin .ssw-section h2 { margin-top: 0; border-bottom: 1px solid #c3c4c7; padding-bottom: 0.5em; }
+.piratez-io-admin .ssw-status-ready { color: #00a32a; font-weight: 600; }
+.piratez-io-admin .ssw-status-blocked { color: #d63638; font-weight: 600; }
+.piratez-io-admin .ssw-issues { margin: 0.5em 0; padding-left: 1.5em; }
+.piratez-io-admin .ssw-issues.ssw-soft { color: #646970; }
+.piratez-io-admin .ssw-action { font-size: 0.95em; }
+.piratez-io-admin .ssw-cards { display: flex; flex-wrap: wrap; gap: 1.5em; margin: 1em 0; }
+.piratez-io-admin .ssw-card { background: #f6f7f7; border: 1px solid #c3c4c7; border-radius: 4px; padding: 1em 1.5em; min-width: 160px; }
+.piratez-io-admin .ssw-card .ssw-value { display: block; font-size: 1.75em; font-weight: 600; }
+.piratez-io-admin .ssw-card .ssw-label { font-size: 0.9em; color: #646970; }
+.piratez-io-admin .ssw-inline-form { margin: 0.5em 0; }
+.piratez-io-admin .ssw-inline-form label { margin-right: 1em; }
+.piratez-io-admin .ssw-batch-actions { margin: 1em 0; }
+.piratez-io-admin .ssw-batch-actions .button { margin-right: 0.5em; }
+.piratez-io-admin .ssw-message { margin-left: 0.5em; }
