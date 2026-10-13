@@ -1,0 +1,53 @@
+name: Publish WordPress release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: wordpress-release
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Validate PHP syntax
+        run: find . -name '*.php' -not -path './dist/*' -print0 | xargs -0 -n1 php -l
+      - name: Build installable package
+        id: package
+        run: python3 tools/build_release.py
+      - name: Publish immutable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.package.outputs.tag }}
+          SLUG: ${{ steps.package.outputs.slug }}
+          VERSION: ${{ steps.package.outputs.version }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            if [ "$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)" = true ]; then
+              echo "An unfinished draft exists for $TAG. Inspect/delete the draft and rerun this workflow." >&2
+              exit 1
+            fi
+            echo "Release $TAG already exists; nothing will be overwritten."
+            exit 0
+          fi
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists without a release. Inspect it before publishing; tags are never reused." >&2
+            exit 1
+          fi
+          gh release create "$TAG" "dist/$SLUG.zip" dist/release.json dist/SHA256SUMS \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$SLUG $VERSION" \
+            --generate-notes --draft
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets > dist/uploaded-assets.json
+          python3 - <<'PY'
+          import json, os
+          assets = {item['name'] for item in json.load(open('dist/uploaded-assets.json'))['assets']}
+          assert assets == {os.environ['SLUG'] + '.zip', 'release.json', 'SHA256SUMS'}, assets
+          PY
+          gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft=false --latest
