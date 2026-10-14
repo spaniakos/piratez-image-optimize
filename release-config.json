@@ -1,0 +1,16 @@
+{
+  "type": "plugin",
+  "slug": "piratez-image-optimize",
+  "repo": "spaniakos/piratez-image-optimize",
+  "entry": "piratez-image-optimize.php",
+  "version_constant": "PIRATEZ_IO_VERSION",
+  "tested": "7.1.3",
+  "runtime": [
+    "piratez-image-optimize.php",
+    "uninstall.php",
+    "readme.txt",
+    "LICENSE",
+    "admin",
+    "includes"
+  ]
+}

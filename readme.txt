@@ -4,7 +4,7 @@ Contributors: drvspan
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv3 or later
 
 Portable, non-destructive server-side image optimization. Discovers install image sizes, generates missing sizes and WebP, serves WebP for featured, attachment, and content images. Full coverage; no theme changes; reversible.
@@ -27,5 +27,12 @@ Portable, non-destructive server-side image optimization. Discovers install imag
 
 == Changelog ==
 
+= 1.1.0 =
+* GitHub release packages with verified native WordPress updates.
+* Environment notices wait until WordPress init to avoid early translation warnings.
+* Independent update checks with version, compatibility and checksum validation.
+
+
 = 1.0.0 =
 * Initial release.
+

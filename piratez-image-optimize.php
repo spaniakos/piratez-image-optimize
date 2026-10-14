@@ -3,13 +3,14 @@
  * Plugin Name: Piratez Image Optimize
  * Plugin URI: https://github.com/spaniakos/piratez-image-optimize
  * Description: Portable, non-destructive server-side image optimization: discovers install image sizes, generates missing sizes and WebP, serves WebP for featured, attachment, and content images. Full coverage; no theme changes; reversible.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Spaniakos
  * Author URI: https://github.com/spaniakos
  * Text Domain: piratez-image-optimize
  * Domain Path: /languages
  * Requires at least: 5.8
  * Requires PHP: 7.4
+ * Update URI: https://github.com/spaniakos/piratez-image-optimize
  *
  * @package Piratez_Image_Optimize
  */
@@ -18,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PIRATEZ_IO_VERSION', '1.0.0' );
+define( 'PIRATEZ_IO_VERSION', '1.1.0' );
 define( 'PIRATEZ_IO_PLUGIN_FILE', __FILE__ );
 define( 'PIRATEZ_IO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PIRATEZ_IO_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -45,7 +46,8 @@ function piratez_io_init() {
 	require_once PIRATEZ_IO_PLUGIN_DIR . 'includes/class-content-substitution.php';
 
 	if ( is_admin() ) {
-		Piratez_IO_Environment::run_detection();
+		// Detection translates notices; wait until WordPress has initialized locales.
+		add_action( 'init', array( 'Piratez_IO_Environment', 'run_detection' ), 20 );
 	}
 
 	if ( is_admin() ) {
@@ -81,3 +83,7 @@ function piratez_io_on_upload( $metadata, $attachment_id ) {
 	Piratez_IO_Generation::generate_webp_for_attachment( $attachment_id, $metadata );
 	return $metadata;
 }
+
+
+require_once __DIR__ . '/includes/github-updater.php';
+new \PirateZImageOptimize\GitHubUpdater(array('name' => 'PirateZ Image Optimize', 'type' => 'plugin', 'slug' => 'piratez-image-optimize', 'repo' => 'spaniakos/piratez-image-optimize', 'key' => plugin_basename(__FILE__), 'entry' => 'piratez-image-optimize.php'));
