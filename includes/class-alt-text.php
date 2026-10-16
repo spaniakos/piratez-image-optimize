@@ -37,9 +37,9 @@ class Piratez_IO_Alt_Text {
         }
         if ($mode === 'parent_title') {
             $parent = (int) wp_get_post_parent_id($id);
-            return $parent && current_user_can('edit_post', $parent) ? self::clean(get_the_title($parent)) : '';
+            return $parent && current_user_can('edit_post', $parent) ? self::clean(html_entity_decode(wp_strip_all_tags((string) get_post_field('post_title', $parent, 'raw')), ENT_QUOTES | ENT_HTML5, 'UTF-8')) : '';
         }
-        return self::clean(get_the_title($id));
+        return self::clean(html_entity_decode(wp_strip_all_tags((string) get_post_field('post_title', $id, 'raw')), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
     }
     public static function query($filter = 'missing', $search = '', $page = 1, $order = 'date') {
         $empty = array('relation' => 'OR', array('key' => self::ALT, 'compare' => 'NOT EXISTS'), array('key' => self::ALT, 'value' => '', 'compare' => '='));
@@ -73,7 +73,7 @@ class Piratez_IO_Alt_Text {
         $changes = $rows = array();
         foreach (array_unique(array_map('absint', $ids)) as $id) {
             $before = self::state($id);
-            $row = array('id' => $id, 'title' => get_the_title($id), 'status' => 'Skipped');
+            $row = array('id' => $id, 'title' => html_entity_decode(wp_strip_all_tags((string) get_post_field('post_title', $id, 'raw')), ENT_QUOTES | ENT_HTML5, 'UTF-8'), 'status' => 'Skipped');
             if (is_wp_error($before)) { $row['status'] = $before->get_error_message(); $rows[] = $row; continue; }
             $old = $before[self::ALT]['value'];
             $row['before'] = $old;

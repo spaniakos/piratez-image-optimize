@@ -11,7 +11,7 @@ add_filter('add_post_metadata',function($check,$id,$key){return get_option('fixt
 fs.writeFileSync(path.join(site,'alt-test.php'),`<?php require __DIR__.'/wp-load.php';require_once ABSPATH.'wp-admin/includes/plugin.php';header('Content-Type: application/json');$action=$_GET['action']??'';
 if($action==='fixtures') {
  $upload=wp_upload_dir();$ids=array();
- foreach(array('missing'=>'Δοκιμή-νησί-1024x768-scaled.png','existing'=>'existing.png','decorative'=>'decorative.png','blank'=>'blank.png') as $name=>$file){$path=$upload['path'].'/'.$file;file_put_contents($path,base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j9xkAAAAASUVORK5CYII='));$id=wp_insert_attachment(array('post_title'=>$name==='missing'?'Εικόνα iPhone':$name,'post_mime_type'=>'image/png','post_status'=>'inherit'),$path);wp_update_attachment_metadata($id,array('width'=>1,'height'=>1,'file'=>_wp_relative_upload_path($path),'sizes'=>array()));$ids[$name]=$id;}
+ foreach(array('missing'=>'Δοκιμή-νησί-1024x768-scaled.png','existing'=>'existing.png','decorative'=>'decorative.png','blank'=>'blank.png') as $name=>$file){$path=$upload['path'].'/'.$file;file_put_contents($path,base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j9xkAAAAASUVORK5CYII='));$id=wp_insert_attachment(array('post_title'=>$name==='missing'?"Εικόνα iPhone &amp; sea's":$name,'post_mime_type'=>'image/png','post_status'=>'inherit'),$path);wp_update_attachment_metadata($id,array('width'=>1,'height'=>1,'file'=>_wp_relative_upload_path($path),'sizes'=>array()));$ids[$name]=$id;}
  update_post_meta($ids['existing'],'_wp_attachment_image_alt',wp_slash('Υπάρχον "alt" C:\\code'));
  update_post_meta($ids['decorative'],'_wp_attachment_image_alt','');update_post_meta($ids['decorative'],'_piratez_io_decorative','1');update_post_meta($ids['blank'],'_wp_attachment_image_alt','');
  $id=$ids['missing'];$url=wp_get_attachment_url($id);
@@ -43,7 +43,7 @@ try{
  let preview=await api('preview',{ids:[ids.missing],mode:'filename'});assert.equal(preview.rows[0].after,'Δοκιμή νησί');assert.equal((await request('state')).meta.missing.exists,false);
  let saved=await api('commit',{token:preview.token});assert.equal(saved.results[0].ok,true);assert.equal((await request('state')).meta.missing.alt,'Δοκιμή νησί');assert.equal((await request('state')).content,initial.content);await api('commit',{token:preview.token},false);
  await api('undo',{batch:saved.id});assert.equal((await request('state')).meta.missing.exists,false);
- const titlePreview=await api('preview',{ids:[ids.missing],mode:'attachment_title'});assert.equal(titlePreview.rows[0].after,'Εικόνα iPhone');
+ const titlePreview=await api('preview',{ids:[ids.missing],mode:'attachment_title'});assert.equal(titlePreview.rows[0].after,"Εικόνα iPhone & sea's");
  await api('preview',{ids:Array.from({length:51},(_,i)=>i+1),mode:'filename'},false);
  await api('preview',{ids:[ids.existing],mode:'filename'},false);await api('preview',{ids:[ids.decorative],mode:'filename'},false);
  preview=await api('preview',{ids:[ids.blank],mode:'parent_title'},false);

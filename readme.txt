@@ -4,7 +4,7 @@ Contributors: drvspan
 Requires at least: 5.8
 Tested up to: 7.1.3
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv3 or later
 
 Portable, non-destructive server-side image optimization. Discovers install image sizes, generates missing sizes and WebP, serves WebP for featured, attachment, and content images. Full coverage; no theme changes; reversible.
@@ -26,6 +26,10 @@ Portable, non-destructive server-side image optimization. Discovers install imag
 3. Go to PirateZ > Image Optimize to check status and run regeneration
 
 == Changelog ==
+
+= 1.2.1 =
+* Derive title suggestions from raw plain-text titles, decoding entities without introducing display markup or private-title prefixes.
+* Cover apostrophes and ampersands in the integration regression.
 
 = 1.2.0 =
 * Add an alt-text audit with review/confirm, bulk metadata editing, filename/title suggestions, decorative markers and guarded undo.
