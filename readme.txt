@@ -2,9 +2,9 @@
 
 Contributors: drvspan
 Requires at least: 5.8
-Tested up to: 6.4
+Tested up to: 7.1.3
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv3 or later
 
 Portable, non-destructive server-side image optimization. Discovers install image sizes, generates missing sizes and WebP, serves WebP for featured, attachment, and content images. Full coverage; no theme changes; reversible.
@@ -23,9 +23,16 @@ Portable, non-destructive server-side image optimization. Discovers install imag
 
 1. Upload the plugin folder to wp-content/plugins/
 2. Activate the plugin from the Plugins screen
-3. Go to Tools > Piratez Image Optimize to check status and run regeneration
+3. Go to PirateZ > Image Optimize to check status and run regeneration
 
 == Changelog ==
+
+= 1.2.0 =
+* Add an alt-text audit with review/confirm, bulk metadata editing, filename/title suggestions, decorative markers and guarded undo.
+* Add separate per-occurrence saved-image content previews, with supported Gutenberg/classic HTML updates and undo.
+* Share one PirateZ menu with other addons, independently of Manager or theme.
+* Redirect old Tools bookmarks and preserve settings and independent GitHub updates.
+
 
 = 1.1.0 =
 * GitHub release packages with verified native WordPress updates.
