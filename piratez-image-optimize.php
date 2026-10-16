@@ -3,7 +3,7 @@
  * Plugin Name: Piratez Image Optimize
  * Plugin URI: https://github.com/spaniakos/piratez-image-optimize
  * Description: Portable, non-destructive server-side image optimization: discovers install image sizes, generates missing sizes and WebP, serves WebP for featured, attachment, and content images. Full coverage; no theme changes; reversible.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Spaniakos
  * Author URI: https://github.com/spaniakos
  * Text Domain: piratez-image-optimize
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PIRATEZ_IO_VERSION', '1.1.0' );
+define( 'PIRATEZ_IO_VERSION', '1.2.0' );
 define( 'PIRATEZ_IO_PLUGIN_FILE', __FILE__ );
 define( 'PIRATEZ_IO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PIRATEZ_IO_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -51,6 +51,8 @@ function piratez_io_init() {
 	}
 
 	if ( is_admin() ) {
+		require_once PIRATEZ_IO_PLUGIN_DIR . 'includes/class-alt-text.php';
+        Piratez_IO_Alt_Text::init();
 		require_once PIRATEZ_IO_PLUGIN_DIR . 'admin/class-admin.php';
 		Piratez_IO_Admin::init();
 	}

@@ -12,16 +12,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Piratez_IO_Admin
  */
+require_once dirname(__DIR__) . '/includes/admin-menu.php';
+
 class Piratez_IO_Admin {
 
 	const SLUG = 'piratez-image-optimize';
 	const CAP  = 'manage_options';
+    private static $page_hook = '';
 
 	/**
 	 * Init: add menu and enqueue scripts.
 	 */
 	public static function init() {
-		add_action( 'admin_menu', array( __CLASS__, 'add_menu' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'add_menu' ), 20 );
 		add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue' ) );
 		add_action( 'admin_post_piratez_io_toggle_processing', array( __CLASS__, 'handle_toggle_processing' ) );
@@ -31,13 +34,15 @@ class Piratez_IO_Admin {
 	 * Add menu page.
 	 */
 	public static function add_menu() {
-		add_management_page(
-			__( 'Piratez Image Optimize', 'piratez-image-optimize' ),
-			__( 'Piratez Image Optimize', 'piratez-image-optimize' ),
+		self::$page_hook = add_submenu_page(
+            \PirateZ\AdminMenu::SLUG,
+			__( 'PirateZ Image Optimize', 'piratez-image-optimize' ),
+			__( 'Image Optimize', 'piratez-image-optimize' ),
 			self::CAP,
 			self::SLUG,
 			array( __CLASS__, 'render_page' )
 		);
+        \PirateZ\AdminMenu::redirect_legacy(self::SLUG);
 	}
 
 	/**
@@ -76,7 +81,7 @@ class Piratez_IO_Admin {
 	 * @return string
 	 */
 	public static function get_settings_url() {
-		return admin_url( 'tools.php?page=' . self::SLUG );
+		return admin_url( 'admin.php?page=' . self::SLUG );
 	}
 
 	/**
@@ -85,9 +90,15 @@ class Piratez_IO_Admin {
 	 * @param string $hook Page hook.
 	 */
 	public static function enqueue( $hook ) {
-		if ( $hook !== 'tools_page_' . self::SLUG ) {
+		if ( $hook !== self::$page_hook ) {
 			return;
 		}
+        if (($_GET['tab'] ?? '') === 'alt') {
+            wp_enqueue_style('piratez-io-alt', plugins_url('admin/css/alt-text.css', PIRATEZ_IO_PLUGIN_FILE), array(), PIRATEZ_IO_VERSION);
+            wp_enqueue_script('piratez-io-alt', plugins_url('admin/js/alt-text.js', PIRATEZ_IO_PLUGIN_FILE), array(), PIRATEZ_IO_VERSION, true);
+            wp_localize_script('piratez-io-alt', 'piratezAlt', array('ajaxUrl' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('piratez_io_alt')));
+            return;
+        }
 		wp_enqueue_style( 'piratez-image-optimize-admin', plugins_url( 'admin/css/admin.css', PIRATEZ_IO_PLUGIN_FILE ), array(), PIRATEZ_IO_VERSION );
 		wp_enqueue_script( 'piratez-image-optimize-admin', plugins_url( 'admin/js/admin.js', PIRATEZ_IO_PLUGIN_FILE ), array( 'jquery' ), PIRATEZ_IO_VERSION, true );
 		wp_localize_script( 'piratez-image-optimize-admin', 'piratezIO', array(
@@ -107,6 +118,10 @@ class Piratez_IO_Admin {
 	 * Render admin page.
 	 */
 	public static function render_page() {
+        if (!current_user_can(self::CAP)) { wp_die('Permission denied.', '', array('response' => 403)); }
+        $tab = isset($_GET['tab']) && $_GET['tab'] === 'alt' ? 'alt' : 'optimize';
+        echo '<div class="wrap"><nav class="nav-tab-wrapper" aria-label="Image Optimize sections"><a class="nav-tab ' . ($tab === 'optimize' ? 'nav-tab-active' : '') . '" href="' . esc_url(self::get_settings_url()) . '">Optimization</a><a class="nav-tab ' . ($tab === 'alt' ? 'nav-tab-active' : '') . '" href="' . esc_url(add_query_arg('tab', 'alt', self::get_settings_url())) . '">Alt text</a></nav></div>';
+        if ($tab === 'alt') { include PIRATEZ_IO_PLUGIN_DIR . 'admin/views/alt-text.php'; return; }
 		$ready = Piratez_IO_Environment::is_ready();
 		$issues = Piratez_IO_Environment::get_issues();
 		$processing_enabled = Piratez_IO_Environment::is_processing_enabled();
